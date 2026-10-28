@@ -1,0 +1,10 @@
+User confirmed physical Control-Command-Escape opens menu.
+> INPUT
+INPUT events=140 packets=134 published=66 mods=20 held=0 pending=0 last_ascii=1b notify=00 desk=2 recent= 37 36 35 b5 b6 b7 3e be 3e be 3d bd 24 a4 35 b5
+GLU key=1b mods=20 irq_enable=02 system_status=90
+
+> STATUS
+STATUS armed=1 ready=1 cycles=29087039 reads=29086317 writes=722 overflow=0 reset=1 glu=80 sync=1 cmd=06 need=0 got=3 rom_reads=0 poll=1 chip_revision=3
+
+> PINS
+PINS RESET=1 IRQ_GATE=0 RESET_GATE=0 COMMAND=0 OPTION=0 raw=00423f8d reset_pulses=1

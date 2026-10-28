@@ -1,0 +1,31 @@
+{
+  "image": "iigs_combined.uf2",
+  "sha256": "62d56b3345ebd8212ddd36b94d185cb3a6a15da60e8561c5a0ac06be8aba6cca",
+  "date": "2026-10-28",
+  "board": "Waveshare Core2350B0; connected RP2350B reports SDK silicon revision3 (A3)",
+  "pico_sdk_commit": "079c6f39023649b154152db30f1d781e884879bc",
+  "pico_sdk_version": "2.3.1",
+  "compiler": "Arm GNU GCC12.3",
+  "observed": [
+    "Applesoft BASIC prompt",
+    "user confirmed BASIC operation after warm reset fix",
+    "physical ADB Command/arrow/Return/chord operation on preceding keyboard candidate",
+    "keyboard LED operation on preceding LED candidate"
+  ],
+  "watchdog": "dual-core hardware timeout tests passed on preceding watchdog candidate with IIgs OFF; logic unchanged",
+  "diagnostic": "System Good observed on earlier capability-fix candidate, not rerun on this exact image",
+  "remaining": [
+    "mouse",
+    "key repeat",
+    "international layouts",
+    "disk boot",
+    "full timing/IRQ qualification"
+  ],
+  "sharing_snapshot_validation": {
+    "native_tests": "PASS",
+    "portable_source_rebuild": "PASS, UF2 byte-identical to hardware snapshot",
+    "powershell_build_wrapper": "PASS",
+    "kicad_erc": "0 violations,2026-10-28",
+    "github_actions": "not run; repository not yet published"
+  }
+}

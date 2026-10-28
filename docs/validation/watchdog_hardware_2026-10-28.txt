@@ -1,0 +1,66 @@
+HOST OFF: Sync and physical Apple RESET effect are not tested
+> SELFTEST
+SELFTEST failures=0
+
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1942 timeout_boot=0 core1_seen=1 core1_heartbeat=154151 core1_age_ms=57 feeds=1386 recovery_reset=0 uptime_ms=138657
+
+> WDOG TEST CORE0
+DISARM required before watchdog fault test
+
+> STATUS
+STATUS armed=1 ready=1 cycles=0 reads=0 writes=0 overflow=0 reset=1 glu=00 sync=0 cmd=00 need=0 got=0 rom_reads=0 poll=1 chip_revision=3
+
+FAULT TEST CORE0
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1970 timeout_boot=0 core1_seen=1 core1_heartbeat=154999 core1_age_ms=29 feeds=1394 recovery_reset=0 uptime_ms=139429
+
+> DISARM
+DISARMED; GPIO0..23 INPUT
+
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1966 timeout_boot=0 core1_seen=1 core1_heartbeat=156094 core1_age_ms=33 feeds=1399 recovery_reset=0 uptime_ms=139933
+
+> WDOG TEST CORE0
+WDOG fault test: halting core0; hardware timeout will reboot
+
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1956 timeout_boot=1 core1_seen=1 core1_heartbeat=3929 core1_age_ms=43 feeds=21 recovery_reset=1 uptime_ms=2143
+
+> SELFTEST
+SELFTEST failures=0
+
+> STATUS
+STATUS armed=1 ready=1 cycles=0 reads=0 writes=0 overflow=0 reset=1 glu=00 sync=0 cmd=00 need=0 got=0 rom_reads=0 poll=1 chip_revision=3
+
+PASS: core0 hardware timeout, USB restart, recovery RESET routine; host Sync not tested (Apple off)
+FAULT TEST CORE1
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1982 timeout_boot=1 core1_seen=1 core1_heartbeat=4779 core1_age_ms=17 feeds=29 recovery_reset=1 uptime_ms=2917
+
+> DISARM
+DISARMED; GPIO0..23 INPUT
+
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1977 timeout_boot=1 core1_seen=1 core1_heartbeat=5876 core1_age_ms=22 feeds=34 recovery_reset=1 uptime_ms=3422
+
+> WDOG TEST CORE1
+WDOG fault test: halting core1; supervisor will stop feeding
+
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1970 timeout_boot=1 core1_seen=1 core1_heartbeat=3359 core1_age_ms=29 feeds=16 recovery_reset=1 uptime_ms=1629
+
+> SELFTEST
+SELFTEST failures=0
+
+> STATUS
+STATUS armed=1 ready=1 cycles=0 reads=0 writes=0 overflow=0 reset=1 glu=00 sync=0 cmd=00 need=0 got=0 rom_reads=0 poll=1 chip_revision=3
+
+PASS: core1 hardware timeout, USB restart, recovery RESET routine; host Sync not tested (Apple off)
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1999 timeout_boot=1 core1_seen=1 core1_heartbeat=4206 core1_age_ms=0 feeds=24 recovery_reset=1 uptime_ms=2400
+
+> PINS
+PINS RESET=0 IRQ_GATE=0 RESET_GATE=0 COMMAND=0 OPTION=0 raw=00400000 reset_pulses=1
+
+PASS: watchdog active; key LED not exercised with Apple off

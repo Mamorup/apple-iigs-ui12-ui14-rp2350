@@ -1,0 +1,13 @@
+name: Native model tests
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Model, input and watchdog health regressions
+        run: python3 tests/run_tests.py

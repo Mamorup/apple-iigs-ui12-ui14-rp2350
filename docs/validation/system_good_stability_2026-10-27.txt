@@ -1,0 +1,19 @@
+BEFORE 2026-10-27T14:08:34.788954
+STATUS
+STATUS armed=1 ready=1 cycles=56207 reads=36186 writes=20021 overflow=0 reset=2 glu=80 sync=1 cmd=09 need=0 got=2 rom_reads=3072 poll=0 chip_revision=3
+
+PINS
+PINS RESET=1 IRQ_GATE=0 RESET_GATE=0 COMMAND=0 OPTION=0 raw=00023e71 reset_pulses=1
+
+CMDSTATS
+COMMANDS 01:3 04:3 05:3 06:3 07:3 08:1 09:3074 0e:3 0f:3 73:2 b3:3
+
+AFTER 2026-10-27T14:09:20.243769
+STATUS
+STATUS armed=1 ready=1 cycles=56207 reads=36186 writes=20021 overflow=0 reset=2 glu=80 sync=1 cmd=09 need=0 got=2 rom_reads=3072 poll=0 chip_revision=3
+
+PINS
+PINS RESET=1 IRQ_GATE=0 RESET_GATE=0 COMMAND=0 OPTION=0 raw=00423e73 reset_pulses=1
+
+CMDSTATS
+COMMANDS 01:3 04:3 05:3 06:3 07:3 08:1 09:3074 0e:3 0f:3 73:2 b3:3

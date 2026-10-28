@@ -1,0 +1,44 @@
+﻿Reference,Value,Footprint,Quantity,Description,Manufacturer,MPN
+J1,Core2350B P1,Connector_PinSocket_2.54mm:PinSocket_2x08_P2.54mm_Vertical,1,Core2350B header P1,,
+J2,Core2350B P2,Connector_PinSocket_2.54mm:PinSocket_2x08_P2.54mm_Vertical,1,Core2350B header P2,,
+J3,Core2350B P3,Connector_PinSocket_2.54mm:PinSocket_2x08_P2.54mm_Vertical,1,Core2350B header P3,,
+J4,Core2350B P4,Connector_PinSocket_2.54mm:PinSocket_2x08_P2.54mm_Vertical,1,Core2350B header P4 reserved,,
+J12,UI12 MOTHERBOARD PADS,,1,Pads at removed UI12,,
+J14,UI14 MOTHERBOARD PADS,,1,Pads at removed UI14,,
+R1,330R,Resistor_SMD:R_0805_2012Metric,1,D0 contention limiter,Yageo,RC0805FR-07330RL
+R2,330R,Resistor_SMD:R_0805_2012Metric,1,D1 contention limiter,Yageo,RC0805FR-07330RL
+R3,330R,Resistor_SMD:R_0805_2012Metric,1,D2 contention limiter,Yageo,RC0805FR-07330RL
+R4,330R,Resistor_SMD:R_0805_2012Metric,1,D3 contention limiter,Yageo,RC0805FR-07330RL
+R5,330R,Resistor_SMD:R_0805_2012Metric,1,D4 contention limiter,Yageo,RC0805FR-07330RL
+R6,330R,Resistor_SMD:R_0805_2012Metric,1,D5 contention limiter,Yageo,RC0805FR-07330RL
+R7,330R,Resistor_SMD:R_0805_2012Metric,1,D6 contention limiter,Yageo,RC0805FR-07330RL
+R8,330R,Resistor_SMD:R_0805_2012Metric,1,D7 contention limiter,Yageo,RC0805FR-07330RL
+RN1,4.7k A2 FIX,Resistor_THT:R_Array_SIP9,0,RP2350 A2 only pull-down network; DNP for A3/A4,,
+R9,220R,Resistor_SMD:R_0805_2012Metric,1,PH0 series protection,Yageo,RC0805FR-07220RL
+R10,220R,Resistor_SMD:R_0805_2012Metric,1,R/W series protection,Yageo,RC0805FR-07220RL
+R11,220R,Resistor_SMD:R_0805_2012Metric,1,KSEL0 series protection,Yageo,RC0805FR-07220RL
+R12,220R,Resistor_SMD:R_0805_2012Metric,1,KSEL1 series protection,Yageo,RC0805FR-07220RL
+R13,220R,Resistor_SMD:R_0805_2012Metric,1,KSEL2 series protection,Yageo,RC0805FR-07220RL
+R14,220R,Resistor_SMD:R_0805_2012Metric,1,RESET sense series protection,Yageo,RC0805FR-07220RL
+R15,220R,Resistor_SMD:R_0805_2012Metric,1,VBL series protection,Yageo,RC0805FR-07220RL
+R16,220R,Resistor_SMD:R_0805_2012Metric,1,UI14 clock series protection,Yageo,RC0805FR-07220RL
+R17,220R,Resistor_SMD:R_0805_2012Metric,1,ADB input series protection,Yageo,RC0805FR-07220RL
+R18,220R,Resistor_SMD:R_0805_2012Metric,1,ADB drive to existing R108/Q4,Yageo,RC0805FR-07220RL
+R19,220R,Resistor_SMD:R_0805_2012Metric,1,Command switch emulation,Yageo,RC0805FR-07220RL
+R20,220R,Resistor_SMD:R_0805_2012Metric,1,Option switch emulation,Yageo,RC0805FR-07220RL
+R21,100R,Resistor_SMD:R_0805_2012Metric,1,IRQ gate resistor,,
+R22,100k,Resistor_SMD:R_0805_2012Metric,1,IRQ gate pull-down,,
+Q1,2N7002,Package_TO_SOT_SMD:SOT-23,1,UI12 IRQ open-drain,,2N7002
+R23,4.7k DNP,Resistor_SMD:R_0805_2012Metric,0,Optional IRQ pull-up; use motherboard pull-up,,
+R24,100R,Resistor_SMD:R_0805_2012Metric,1,Reset gate resistor,,
+R25,100k,Resistor_SMD:R_0805_2012Metric,1,Reset gate pull-down,,
+Q2,2N7002,Package_TO_SOT_SMD:SOT-23,1,UI14 system-reset open-drain,,2N7002
+R26,4.7k DNP,Resistor_SMD:R_0805_2012Metric,0,Optional reset pull-up; use motherboard pull-up,,
+D1,SS14,Diode_SMD:D_SMA,1,IIgs to Core VBUS isolation,,SS14
+JP1,IIGS POWER ENABLE,Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical,1,Remove before USB is connected to a powered IIgs,,
+C1,100nF,Capacitor_SMD:C_0805_2012Metric,1,IIgs rail bypass,,
+C2,10uF,Capacitor_SMD:C_1206_3216Metric,1,IIgs rail local bulk,,
+C3,10uF,Capacitor_SMD:C_1206_3216Metric,1,Core VBUS local bulk,,
+J5,SWD,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,"3V3, SWDIO, SWCLK, GND",,
+J6,UART 3V3,Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical,1,"GND, 3V3, TX, RX",,
+SW1,RUN,Button_Switch_THT:SW_PUSH_6mm,1,Core reset/run button,,

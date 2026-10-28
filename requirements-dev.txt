@@ -1,0 +1,3 @@
+cmake>=3.20
+ninja>=1.10
+pyserial>=3.5

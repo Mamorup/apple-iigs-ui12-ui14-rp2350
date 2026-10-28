@@ -1,0 +1,174 @@
+> SELFTEST
+SELFTEST failures=0
+
+> RESET
+SYSTEM RESET pulse 4ms
+
+> TRACE
+TRACE count=77
+000 C 07
+001 C 00
+002 C 32
+003 C 00
+004 C 24
+005 C 73
+006 C 09
+007 C 51
+008 C 00
+009 R 00
+010 C 08
+011 C 51
+012 C a5
+013 C 01
+014 C 0f
+015 R 01
+016 R 00
+017 C 0e
+018 R 01
+019 R 00
+020 C b3
+021 C 03
+022 C 01
+023 C 05
+024 C ff
+025 C 04
+026 C 00
+027 C 06
+028 C 32
+029 C 00
+030 C 24
+031 C 07
+032 C 00
+033 C 32
+034 C 00
+035 C 24
+036 C 73
+037 C 09
+038 C 51
+039 C 00
+040 R a5
+041 C 01
+042 C 0f
+043 R 01
+044 R 00
+045 C 0e
+046 R 01
+047 R 00
+048 C b3
+049 C 03
+050 C 01
+051 C 05
+052 C ff
+053 C 04
+054 C 00
+055 C 06
+056 C 32
+057 C 00
+058 C 24
+059 C 01
+060 C 0f
+061 R 01
+062 R 00
+063 C 0e
+064 R 01
+065 R 00
+066 C b3
+067 C 03
+068 C 01
+069 C 05
+070 C ff
+071 C 04
+072 C 00
+073 C 06
+074 C 32
+075 C 00
+076 C 24
+
+> RESET
+SYSTEM RESET pulse 4ms
+
+> TRACE
+TRACE count=74
+000 C 07
+001 C 00
+002 C 32
+003 C 00
+004 C 24
+005 C 73
+006 C 09
+007 C 51
+008 C 00
+009 R a5
+010 C 01
+011 C 0f
+012 R 01
+013 R 00
+014 C 0e
+015 R 01
+016 R 00
+017 C b3
+018 C 03
+019 C 01
+020 C 05
+021 C ff
+022 C 04
+023 C 00
+024 C 06
+025 C 32
+026 C 00
+027 C 24
+028 C 07
+029 C 00
+030 C 32
+031 C 00
+032 C 24
+033 C 73
+034 C 09
+035 C 51
+036 C 00
+037 R a5
+038 C 01
+039 C 0f
+040 R 01
+041 R 00
+042 C 0e
+043 R 01
+044 R 00
+045 C b3
+046 C 03
+047 C 01
+048 C 05
+049 C ff
+050 C 04
+051 C 00
+052 C 06
+053 C 32
+054 C 00
+055 C 24
+056 C 01
+057 C 0f
+058 R 01
+059 R 00
+060 C 0e
+061 R 01
+062 R 00
+063 C b3
+064 C 03
+065 C 01
+066 C 05
+067 C ff
+068 C 04
+069 C 00
+070 C 06
+071 C 32
+072 C 00
+073 C 24
+
+> STATUS
+STATUS armed=1 ready=1 cycles=18460 reads=18143 writes=317 overflow=0 reset=2 glu=80 sync=1 cmd=06 need=0 got=3 rom_reads=0 poll=1 chip_revision=3
+
+> WDOG
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1929 timeout_boot=0 core1_seen=1 core1_heartbeat=9377 core1_age_ms=70 feeds=110 recovery_reset=0 uptime_ms=11075
+
+> PINS
+PINS RESET=1 IRQ_GATE=0 RESET_GATE=0 COMMAND=0 OPTION=0 raw=00423eff reset_pulses=2

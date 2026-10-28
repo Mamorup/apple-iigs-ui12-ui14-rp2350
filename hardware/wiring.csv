@@ -1,0 +1,23 @@
+RP2350_GPIO,Signal,Apple_IIgs_pad,Connection
+GPIO0,D0,UI12 pad38,330 ohm series
+GPIO1,D1,UI12 pad41,330 ohm series
+GPIO2,D2,UI12 pad42,330 ohm series
+GPIO3,D3,UI12 pad43,330 ohm series
+GPIO4,D4,UI12 pad44,330 ohm series
+GPIO5,D5,UI12 pad1,330 ohm series
+GPIO6,D6,UI12 pad2,330 ohm series
+GPIO7,D7,UI12 pad3,330 ohm series
+GPIO8,PH0,UI12 pad37,220 ohm
+GPIO9,R/W,UI12 pad35,220 ohm
+GPIO10,KSEL0,UI12 pad30,220 ohm
+GPIO11,KSEL1,UI12 pad31,220 ohm
+GPIO12,KSEL2,UI12 pad32,220 ohm
+GPIO13,SYSTEM_RESET sense,UI12 pad33,220 ohm; NOT UI14 pad16
+GPIO14,VBL,UI12 pad34 / UI14 pad14,220 ohm; optional for initial bus test
+GPIO15,IRQ,UI12 pad36,100 ohm -> Q1 gate; Q1 source=GND; drain=pad36; gate 100k to GND
+GPIO16,Original MCU clock,UI14 pad17,optional 220 ohm; not used by current firmware
+GPIO17,ADB IN,UI14 pad47,220 ohm
+GPIO18,ADB OUT,UI14 pad41,220 ohm; retains original R108/Q4
+GPIO19,SYS_RESET drive,UI14 pad49,100 ohm -> Q2 gate; Q2 source=GND; drain=pad49; gate 100k to GND
+GPIO20,COMMAND,UI14 pad39,220 ohm; LOW released
+GPIO21,OPTION,UI14 pad40,220 ohm; LOW released
