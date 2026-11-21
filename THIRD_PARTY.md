@@ -13,7 +13,10 @@ documentation. This does not relicense third-party code, libraries or manuals.
   when redistributing builds with additional components.
 - **KiCad standard libraries** provide symbols/footprint references. See
   https://www.kicad.org/libraries/license/ for CC-BY-SA4.0 and its design
-  exception. No separate symbol/footprint library collection is bundled.
+  exception. Custom footprint libraries are included in the native PCB archives; the
+  KiCad library design exception applies to embedded library elements.
+- **Raspberry Pi reference hardware design elements** used by the discrete
+  RP2350B PCB retain the MIT notice in its LICENSE-RaspberryPi.txt.
 - **Apple documentation and ROMs** remain their owners' works. Links and a
   description of protocol findings are provided; ROM dumps and full manuals
   are excluded.

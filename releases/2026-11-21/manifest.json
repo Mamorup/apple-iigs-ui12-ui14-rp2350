@@ -1,0 +1,31 @@
+{
+  "date": "2026-11-21",
+  "image": "iigs_combined.uf2",
+  "sha256": "464cbc0363a5f58797818aa5db9855a549e001587bd13a834dcaa3d310c47697",
+  "pico_sdk_version": "2.3.1",
+  "pico_sdk_commit": "079c6f39023649b154152db30f1d781e884879bc",
+  "compiler": "Arm GNU GCC 12.3",
+  "changes": [
+    "Hold host RESET until bus and input initialization complete",
+    "Rearm PIO/DMA/controller once per powered-off host interval",
+    "Deduplicate repeated keyboard Power/Reset reports with 250ms quiet interval"
+  ],
+  "observed": [
+    "On-device SELFTEST=0, bus ready, startup hold released, watchdog healthy",
+    "User confirmed startup from IIgs supply with JP1 closed and USB disconnected",
+    "Earlier November candidate: three cold starts and keyboard combinations confirmed"
+  ],
+  "remaining": [
+    "Repeated cold starts and keyboard-reset regression on this exact image",
+    "Mouse, international layouts, full timing/IRQ qualification",
+    "Some game images still fail; Pac-Man displays repeated 2 characters",
+    "Speaker hiss unresolved; no audio fix claimed"
+  ],
+  "sharing_snapshot_validation": {
+    "native_model_input_reset_filter": "PASS; assertions enabled, -Wall -Wextra -Werror",
+    "native_watchdog_policy": "PASS; assertions enabled",
+    "portable_ARM_source_rebuild": "PASS; SDK 2.3.1/GCC 12.3, -Wall -Wextra -Werror",
+    "portable_rebuild_sha256": "4177e8a82d310e42959d8392467e43056cb90516998ee4e5a6f386537aeb373d",
+    "note": "Prebuilt hardware-tested image retained; separate build paths can produce a different binary hash."
+  }
+}

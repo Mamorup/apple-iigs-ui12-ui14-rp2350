@@ -1,0 +1,22 @@
+{
+  "board_mm": [
+    30,
+    30
+  ],
+  "layers": 4,
+  "PLCC44_finished_drill_mm": 0.65,
+  "PLCC44_row_centres_mm": 17.4,
+  "pin_square_mm": 0.4,
+  "nominal_outside_pin_span_mm": 17.8,
+  "header_pitch_mm": 2.54,
+  "GPIO_mapping": "PASS, unchanged",
+  "power_path": "IIgs5V -> D1 -> JP1 -> Core VBUS; 3V3 is output only",
+  "minimum_track_mm": 0.15,
+  "configured_clearance_mm": 0.2,
+  "bottom_mounted_components": [],
+  "module_clearance_requirement_mm": 4,
+  "physical_fit": "NOT TESTED",
+  "pin_protrusion": "NOT TESTED",
+  "electrical_bringup_of_this_PCB": "NOT TESTED",
+  "notes": "Core module and carrier offset by 4.2mm in X; check orientation and housing before fabrication"
+}

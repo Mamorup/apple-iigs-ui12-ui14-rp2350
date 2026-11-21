@@ -15,6 +15,6 @@ root = Path(__file__).resolve().parents[1]
 with tempfile.TemporaryDirectory(prefix='iigs-native-') as folder:
     for name in ['input_regression', 'watchdog_health_test']:
         output = Path(folder) / (name + ('.exe' if os.name == 'nt' else ''))
-        subprocess.run([args.cc, '-std=c99', '-O2', '-Wall', '-Wextra', '-Werror',
+        subprocess.run([args.cc, '-UNDEBUG', '-std=c99', '-O2', '-Wall', '-Wextra', '-Werror',
                         str(root / 'tests' / (name + '.c')), '-o', str(output)], check=True)
         subprocess.run([str(output)], check=True)

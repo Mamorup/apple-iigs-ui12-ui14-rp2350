@@ -1,0 +1,11 @@
+PINS RESET=0 IRQ_GATE=0 RESET_GATE=0 COMMAND=0 OPTION=0 raw=00000000 reset_pulses=0
+
+PH0 counter=0 elapsed_us=10000 Hz=0
+
+DISARMED; GPIO0..23 INPUT
+
+UF2 Bootloader v1.1
+Model: Raspberry Pi RP2350
+Board-ID: RP2350
+
+UF2 copied to H:\

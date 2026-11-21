@@ -10,8 +10,16 @@ Keep the motherboard's original ADB pull-up and Q4/R108 driver circuit.
 - Tested module: Waveshare Core2350B0, RP2350B SDK silicon revision3 (A3).
   A2 is not qualified. Review the RP2350 FT GPIO power/voltage conditions.
 - Common GND: Core GND to motherboard GND, for example UI12 pad7.
-- Power Core USB FIRST, then IIgs. Switch IIgs OFF before disconnecting Core.
-- JP1 stays OPEN during USB power. Do not connect motherboard5V to Core3V3.
+- With the 2026-11-21 firmware, startup using IIgs power through the configured
+  JP1 path was reported working with USB disconnected. The firmware holds
+  system RESET until emulator initialization finishes.
+- Core module carrier: IIgs 5 V -> isolation diode -> JP1 -> Core VBUS.
+  Discrete-RP2350B Rev2 PCB: IIgs 5 V -> D1 -> JP1 -> SYS_VBUS -> U2 (3V3);
+  USB VBUS has a separate D2 path. TP5 is USB VBUS, not SYS_VBUS.
+- These supply circuits are different. Use the schematic for the assembled
+  board and verify the actual diode/jumper configuration. Never feed 5 V
+  directly into RP2350 supply pins or Core 3V3.
+- Cold-start success does not qualify every dual-source/backfeed condition.
 - Series resistors are not level translators. Only suitable powered FT digital
   GPIOs are used by this prototype; do not generalize this to other RP GPIOs.
 - GPIO15/19 must use external open-drain/open-collector drivers, never direct
@@ -68,6 +76,7 @@ pinout; do not assume TO-92 devices all have the same arrangement.
   current firmware. GPIO22/23 UART is not implemented. No wiring is needed
   for the old MD0..7, SEL0..3 or STB inter-chip nets; they are internal here.
 - The native KiCad9 schematic and PDF show the prototype/BOM, including
-  optional/unimplemented provisions. No routed PCB is supplied.
+  optional/unimplemented provisions. The separate Rev2 PCB is under
+  boards/rp2350b-4layer-rev2/.
 
 GPIO39 is the module's existing onboard LED; no motherboard wire is needed.

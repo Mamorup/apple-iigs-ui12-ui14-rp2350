@@ -58,6 +58,24 @@ int main(void) {
     assert((test_glu.mods & 0x43) == 0x43 && option_pin == 1);
     input_keycode(0xfb); input_keycode(0xfc); input_keycode(0xfd);
     assert((test_glu.mods & 0x43) == 0 && option_pin == 0);
-    puts("PASS: model, chord/status IRQ, ordinary keys, release, host reset");
+    /* Repeated Power reports, including across host RESET, must not retrigger. */
+    fresh(); input_keycode(0x36); /* Control */
+    input_keycode(0x7f); input_service(1000, 0, 0, 0x32, 0);
+    assert(reset_count == 1);
+    input_host_reset();
+    input_keycode(0x7f); input_service(1100, 0, 0, 0x32, 0);
+    input_keycode(0x7f); input_service(1200, 0, 0, 0x32, 0);
+    assert(reset_count == 1 && command_pin == 0);
+    input_keycode(0x7f); input_service(1449, 0, 0, 0x32, 0);
+    assert(reset_count == 1); /* 249 ms since the most recent report */
+    input_keycode(0x7f); input_service(1699, 0, 0, 0x32, 0);
+    assert(reset_count == 2); /* a full 250 ms quiet interval */
+    input_keycode(0x7f); input_service(UINT32_MAX - 100, 0, 0, 0x32, 0);
+    assert(reset_count == 3);
+    input_keycode(0x7f); input_service(100, 0, 0, 0x32, 0);
+    assert(reset_count == 3); /* 201 ms across timer wrap */
+    input_keycode(0x7f); input_service(350, 0, 0, 0x32, 0);
+    assert(reset_count == 4);
+    puts("PASS: model, chord/status IRQ, ordinary keys, release, host reset, reset report filter");
     return 0;
 }

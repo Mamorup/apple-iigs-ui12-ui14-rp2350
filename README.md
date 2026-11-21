@@ -10,10 +10,11 @@ It implements the motherboard interface and a behavioral ADB controller, not
 an instruction-level Mitsubishi MCU emulator. Original Apple ROM images are
 not required by this firmware and are not distributed here.
 
-**Status: working hardware prototype, 2026-10-28.** One ROM01 IIgs has reached
+**Status: working hardware prototype, 2026-11-21.** One ROM01 IIgs has reached
 Applesoft BASIC and accepted ADB keyboard input. This is not a fully qualified,
-drop-in production replacement. The KiCad files are a wiring schematic;
-there is no routed PCB or set of manufacturing files in this repository.
+drop-in production replacement. The original wiring schematic and a four-layer Rev2 PCB prototype are
+included under hardware/. The completed Core2350B PTH Rev B carrier is included as a CAD-checked
+prototype under hardware/boards/core2350b-pth-revb/.
 
 ## Hardware used
 
@@ -29,8 +30,11 @@ there is no routed PCB or set of manufacturing files in this repository.
 See [hardware/WIRING.md](hardware/WIRING.md) before connecting the board.
 This prototype uses powered RP2350 FT digital GPIOs directly; it is not a
 generic3.3V/5V interface design. A2 silicon is not qualified by this project.
-Power Core from USB **before** powering the IIgs; switch IIgs off first.
-Keep JP1 open during USB power. Never connect IIgs5V to Core3V3.
+The latest firmware supports startup from IIgs power through the configured
+JP1 supply path: this was confirmed on the user's assembly with USB absent.
+USB-first operation also remains supported. The wiring prototype and the
+discrete-RP2350B PCB use different supply circuits; see hardware/WIRING.md.
+Never connect IIgs 5 V to Core 3V3.
 
 ## Features and observed results
 
@@ -44,8 +48,12 @@ Keep JP1 open during USB power. Never connect IIgs5V to Core3V3.
 - GPIO39 LED lights while any decoded key is held and goes out on release.
 - Hardware watchdog:2s timeout; core0 feeds only with fresh core1 progress.
   Deliberate hangs of both cores caused real watchdog restarts in bench tests.
-- After a watchdog timeout boot, one4ms system RESET is issued through the
-  external driver after re-ARM to allow the IIgs to synchronize again.
+- Startup holds the external system RESET driver until the bus and keyboard
+  state are ready, including watchdog recovery. This fixes the reported
+  failure when the emulator and IIgs receive power together.
+- With USB left powered, a detected host-off interval reinitializes the
+  PIO/DMA/controller before the next IIgs boot.
+- Repeated Power/Reset reports are filtered using a 250 ms quiet interval.
 
 An earlier candidate reached **System Good**. The full diagnostic was not
 rerun on every later image. See the per-image [validation record](docs/VALIDATION.md).
@@ -65,18 +73,19 @@ rerun on every later image. See the per-image [validation record](docs/VALIDATIO
 
 ## Prebuilt firmware
 
-The hardware-tested snapshot is [releases/2026-10-28/iigs_combined.uf2](releases/2026-10-28/iigs_combined.uf2).
+The hardware-tested snapshot is [releases/2026-11-21/iigs_combined.uf2](releases/2026-11-21/iigs_combined.uf2).
 Its SHA256 is:
 
 ```text
-62d56b3345ebd8212ddd36b94d185cb3a6a15da60e8561c5a0ac06be8aba6cca
+464cbc0363a5f58797818aa5db9855a549e001587bd13a834dcaa3d310c47697
 ```
 
 Enter the RP2350 UF2 bootloader and copy the UF2 to its USB storage volume.
 When the existing firmware is accessible through USB CDC, send `DISARM`,
-then `BOOT` to enter the bootloader. GPIOs start as inputs; after selftest
-passes, ARM and ADB polling start automatically. If Core was restarted while
-IIgs was already running, issue a system RESET so the host initializes it.
+then `BOOT` to enter the bootloader with the IIgs off. On application entry,
+GPIO19 asserts the external RESET transistor. RESET is released after the
+750 ms startup interval, bus/input initialization and a further 4 ms hold.
+ARM and ADB polling start automatically after a successful selftest.
 Do not connect a programmer or change wiring with the motherboard powered.
 
 ## Build from source
@@ -111,6 +120,7 @@ Optional console: `python tools/usb_console.py STATUS` (requires pyserial).
 |---|---|
 | `STATUS`, `PINS`, `INPUT`, `WDOG`, `LED` | Read state, key history and watchdog health |
 | `SELFTEST` | Portable model regression check |
+| `POWERSTAT` | Host-off rearms and startup-reset state/version |
 | `RESET` | Pulse the external system RESET driver for4ms |
 | `ARM` / `DISARM` | Enable emulator / release GPIO0..23 |
 | `POLL ON` / `POLL OFF` | Enable/disable physical ADB polling |

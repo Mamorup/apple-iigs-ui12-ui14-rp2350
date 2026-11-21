@@ -14,6 +14,10 @@ static uint8_t mouse_pending, mouse_y, mouse_x;
 static uint32_t next_poll;
 static uint8_t poll_mouse;
 static uint8_t reset_requested;
+#if !DISABLE_ADB_AUTOPOLL
+static uint8_t reset_key_seen;
+static uint32_t last_reset_key_ms;
+#endif
 static uint8_t notification;
 static uint32_t key_events, key_published, keyboard_packets, desk_events;
 static uint8_t recent_keys[16], recent_pos, last_ascii;
@@ -175,7 +179,13 @@ void input_service(uint32_t now_ms, uint8_t status, uint8_t modes,
 #else
     if (reset_requested) {
         reset_requested = 0;
-        if ((modes & 0x80) || (modifiers & 0x02)) {
+        // A single Power key action can deliver several $7F reports,
+        // including after the host reset. Require a quiet interval.
+        uint8_t new_press = !reset_key_seen ||
+            (uint32_t)(now_ms - last_reset_key_ms) >= 250;
+        reset_key_seen = 1;
+        last_reset_key_ms = now_ms;
+        if (new_press && ((modes & 0x80) || (modifiers & 0x02))) {
             system_reset_pulse();
         }
     }

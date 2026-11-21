@@ -1,0 +1,1 @@
+PASS: 44 holes on 0.650mm tool; 17.400mm centre span in X/Y; absolute origin matches Gerber.

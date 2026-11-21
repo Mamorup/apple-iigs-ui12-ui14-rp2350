@@ -29,6 +29,9 @@
 typedef struct {uint32_t data[QSIZE];atomic_uint head,tail;} ring_t;
 static ring_t host_to_ctrl,ctrl_to_glu;
 static atomic_bool armed=false,bus_ready=false,host_reset=true,adb_poll=true;
+// Keep the host in RESET until both emulator cores and keyboard state are ready.
+// GPIO19 drives Q2's gate; Q2 pulls motherboard /RESET low (never drives it high).
+static atomic_bool startup_reset_held=true;
 static atomic_uint reset_epoch,public_status,public_system_status,read_mismatch_mask,read_mismatch_count,last_read_expected,last_read_seen,last_read_oe,last_read_out,response_applied,cycles,read_cycles,write_cycles,overflows;
 static controller_t controller;
 static atomic_uint public_key_state;
@@ -58,9 +61,10 @@ void glu_write(uint8_t reg,uint8_t value){if(!atomic_load(&bus_ready))return;if(
 void set_apple_button(unsigned gpio,int pressed){if(atomic_load(&bus_ready))gpio_put(gpio,pressed!=0);}
 void system_reset_pulse(void){if(!atomic_load(&bus_ready))return;reset_pulses++;gpio_put(19,1);busy_wait_us_32(4000);gpio_put(19,0);}
 static void passive(void){for(unsigned i=0;i<24;i++){gpio_init(i);gpio_set_dir(i,GPIO_IN);gpio_disable_pulls(i);}}
-static void active_outputs(void){for(unsigned i=0;i<24;i++){gpio_init(i);gpio_disable_pulls(i);}for(unsigned i=0;i<8;i++)gpio_set_dir(i,GPIO_IN);
+static void active_outputs(void){bool hold_reset=atomic_load(&startup_reset_held);
+ for(unsigned i=0;i<24;i++){if(i==19&&hold_reset)continue;gpio_init(i);gpio_disable_pulls(i);}for(unsigned i=0;i<8;i++)gpio_set_dir(i,GPIO_IN);
  for(unsigned i=8;i<=14;i++)gpio_set_dir(i,GPIO_IN);
- for(unsigned i=15;i<=21;i++){gpio_put(i,0);gpio_set_dir(i,(i==16||i==17)?GPIO_IN:GPIO_OUT);}
+ for(unsigned i=15;i<=21;i++){gpio_put(i,i==19&&hold_reset);gpio_set_dir(i,(i==16||i==17)?GPIO_IN:GPIO_OUT);}
 }
 static volatile uint32_t read_headers[16],read_replies,last_reply;
 _Alignas(64) static volatile uint32_t response_table[16];
@@ -274,7 +278,7 @@ static void bus_selftest(bool write_test){
  atomic_store(&armed,false);while(atomic_load(&bus_ready))tight_loop_contents();
  printf("BUSTEST %s 1MHz samples=4096 bad=%u first_bad=%02x index=%u timeout=%u core1_cycles=%lu C027=%02x\n",write_test?"WRITE":"READ",bad,first,first_index,timeout,(unsigned long)observed,reg27);
 }
-static void measure_ph0(void){
+static uint32_t sample_ph0(uint32_t *elapsed_us){
  PIO pio=pio1;uint sm=pio_claim_unused_sm(pio,true);
  uint16_t ins[]={pio_encode_wait_gpio(true,8),pio_encode_wait_gpio(false,8),pio_encode_jmp_x_dec(0)};
  struct pio_program prog={.instructions=ins,.length=3,.origin=-1};uint offset=pio_add_program(pio,&prog);pio->instr_mem[offset+2]=pio_encode_jmp_x_dec(offset);
@@ -283,6 +287,9 @@ static void measure_ph0(void){
  uint32_t t=time_us_32();pio_sm_set_enabled(pio,sm,true);busy_wait_us_32(10000);pio_sm_set_enabled(pio,sm,false);uint32_t dt=time_us_32()-t;
  pio_sm_exec(pio,sm,pio_encode_mov(pio_isr,pio_x));pio_sm_exec(pio,sm,pio_encode_push(false,true));uint32_t count=0xffffffffu-pio_sm_get_blocking(pio,sm);
  pio_sm_unclaim(pio,sm);pio_remove_program(pio,&prog,offset);
+ *elapsed_us=dt;return count;
+}
+static void measure_ph0(void){uint32_t dt;uint32_t count=sample_ph0(&dt);
  printf("PH0 counter=%lu elapsed_us=%lu Hz=%lu\n",(unsigned long)count,(unsigned long)dt,(unsigned long)(((uint64_t)count*1000000)/dt));
 }
 static void pio_check(void){
@@ -321,6 +328,17 @@ static void reset_watch_report(void){
  for(unsigned i=0;i<n;i++)printf(" %llu",(unsigned long long)(((uint64_t)(0xffffffffu-reset_width_samples[i])*2000000000ull)/clock_get_hz(clk_sys)));
  puts("");
 }
+static void disarm_bus(void){
+ atomic_store(&armed,false);
+ while(atomic_load(&bus_ready))tight_loop_contents();
+}
+
+static void arm_bus(void){
+  ctrl_reset(&controller);trace_head=0;
+  atomic_store(&host_to_ctrl.head,0);atomic_store(&host_to_ctrl.tail,0);atomic_store(&ctrl_to_glu.head,0);atomic_store(&ctrl_to_glu.tail,0);
+  atomic_store(&armed,true);while(!atomic_load(&bus_ready))tight_loop_contents();input_init();
+}
+
 static void command(char *line){
  if(!strcmp(line,"RESETWATCH"))reset_watch_start();
  else if(!strcmp(line,"WDOG"))printf("WDOG enabled=%u timeout_ms=%u remaining_ms=%lu timeout_boot=%u core1_seen=%u core1_heartbeat=%lu core1_age_ms=%lu feeds=%lu recovery_reset=%u uptime_ms=%lu\n",watchdog_started,EMULATOR_WATCHDOG_TIMEOUT_MS,(unsigned long)watchdog_get_time_remaining_ms(),watchdog_timeout_boot,watchdog_health.seen,(unsigned long)atomic_load_explicit(&core1_heartbeat,memory_order_relaxed),(unsigned long)(to_ms_since_boot(get_absolute_time())-watchdog_health.last_progress_ms),(unsigned long)watchdog_feeds,watchdog_timeout_boot&&reset_pulses!=0,(unsigned long)to_ms_since_boot(get_absolute_time()));
@@ -346,11 +364,9 @@ static void command(char *line){
  else if(!strcmp(line,"SELFTEST"))printf("SELFTEST failures=%d\n",model_selftest());
  else if(!strcmp(line,"ARM")){
   if(atomic_load(&armed)){puts("ALREADY ARMED");return;}
-  ctrl_reset(&controller);trace_head=0;
-  atomic_store(&host_to_ctrl.head,0);atomic_store(&host_to_ctrl.tail,0);atomic_store(&ctrl_to_glu.head,0);atomic_store(&ctrl_to_glu.tail,0);
-  atomic_store(&armed,true);while(!atomic_load(&bus_ready))tight_loop_contents();input_init();puts(atomic_load(&adb_poll)?"ARMED; ADB autopoll ON":"ARMED; ADB autopoll OFF");
+  arm_bus();puts(atomic_load(&adb_poll)?"ARMED; ADB autopoll ON":"ARMED; ADB autopoll OFF");
  }else if(!strcmp(line,"DISARM")){
-  atomic_store(&armed,false);while(atomic_load(&bus_ready))tight_loop_contents();puts("DISARMED; GPIO0..23 INPUT");
+  disarm_bus();puts("DISARMED; GPIO0..23 INPUT");
  }else if(!strcmp(line,"RESET")){if(atomic_load(&bus_ready)){system_reset_pulse();puts("SYSTEM RESET pulse 4ms");}else puts("ARM FIRST");}
  else if(!strcmp(line,"POLL ON")){atomic_store(&adb_poll,true);puts("ADB autopoll ON");}
  else if(!strcmp(line,"POLL OFF")){atomic_store(&adb_poll,false);puts("ADB autopoll OFF");}
@@ -361,14 +377,46 @@ static void command(char *line){
 }
 int main(void){
  watchdog_timeout_boot=watchdog_enable_caused_reboot();
- passive();gpio_init(39);gpio_set_dir(39,GPIO_OUT);stdio_init_all();
+ passive();gpio_put(19,1);gpio_set_dir(19,GPIO_OUT);
+ gpio_init(39);gpio_set_dir(39,GPIO_OUT);stdio_init_all();
  watchdog_enable(EMULATOR_WATCHDOG_TIMEOUT_MS,false);watchdog_started=true;
  ctrl_reset(&controller);irq_set_exclusive_handler(PIO2_IRQ_0,read_service);irq_set_priority(PIO2_IRQ_0,0);irq_set_enabled(PIO2_IRQ_0,true);multicore_launch_core1(bus_core);
  int failures=model_selftest();bool automatic_start_done=false;uint32_t epoch=0;bool response_pending=false,last_led_state=false;unsigned response_sequence=0;char line[64];unsigned used=0;
  for(;;){
   uint32_t now=to_ms_since_boot(get_absolute_time());
   watchdog_service(now);
-  if(!automatic_start_done && now>=750){automatic_start_done=true;if(!failures){char arm_command[]="ARM";command(arm_command);if(watchdog_timeout_boot){busy_wait_us_32(1000);system_reset_pulse();}}}
+  if(!automatic_start_done && now>=750){
+   automatic_start_done=true;
+   if(!failures){
+    if(!atomic_load(&armed))arm_bus();
+    // bus_ready is published by core1; arm_bus also initializes input state.
+    // Leave time for core1 to observe /RESET before releasing the host.
+    busy_wait_us_32(4000);
+    reset_pulses++;
+   }
+   atomic_store(&startup_reset_held,false);gpio_put(19,0);
+  }
+  // A normal keyboard reset leaves PH0 running. A powered-off IIgs
+  // holds RESET low without PH0, so re-arm once per power-off interval.
+  static bool tracking_low=false,rearmed_while_off=false;
+  static uint32_t low_since=0;
+  static unsigned automatic_rearms=0;
+  if(gpio_get(13)){
+   tracking_low=false;rearmed_while_off=false;
+  }else if(!tracking_low){
+   low_since=now;tracking_low=true;
+  }else if(atomic_load(&bus_ready)&&!rearmed_while_off&&(uint32_t)(now-low_since)>=30){
+   uint32_t elapsed;
+   uint32_t edges=sample_ph0(&elapsed);
+   low_since=now;
+   if(!edges&&!gpio_get(13)){
+    disarm_bus();
+    arm_bus();
+    response_pending=false;
+    rearmed_while_off=true;
+    automatic_rearms++;
+   }
+  }
   if(atomic_load(&bus_ready)){
    unsigned current=atomic_load_explicit(&reset_epoch,memory_order_acquire);
    if(current!=epoch){epoch=current;trace_head=0;ctrl_host_reset(&controller);input_host_reset();response_pending=false;}
@@ -391,7 +439,7 @@ int main(void){
    }
    if(atomic_load(&adb_poll))input_service(now,status,controller.modes,controller.config[0],controller.synced);
   }
-  int ch=getchar_timeout_us(0);if(ch>=0){if(ch=='\r'||ch=='\n'){if(used){line[used]=0;command(line);used=0;}}else if(used<sizeof(line)-1)line[used++]=(char)ch;}
+  int ch=getchar_timeout_us(0);if(ch>=0){if(ch=='\r'||ch=='\n'){if(used){line[used]=0;if(!strcmp(line,"POWERSTAT"))printf("POWERSTAT rearms=%u startup_reset_held=%u startup_done=%u startup_fix=1\n",automatic_rearms,atomic_load(&startup_reset_held),automatic_start_done);else command(line);used=0;}}else if(used<sizeof(line)-1)line[used++]=(char)ch;}
   bool led_state=failures||(atomic_load(&bus_ready)&&input_any_key_down());
   if(led_state!=last_led_state){gpio_put(39,led_state);last_led_state=led_state;}
  }

@@ -1,0 +1,9 @@
+SELFTEST failures=0
+
+STATUS armed=1 ready=1 cycles=0 reads=0 writes=0 overflow=0 reset=2 glu=00 sync=0 cmd=00 need=0 got=0 rom_reads=0 poll=1 chip_revision=3
+
+POWERSTAT rearms=1 startup_reset_held=0 startup_done=1 startup_fix=1
+
+PINS RESET=0 IRQ_GATE=0 RESET_GATE=0 COMMAND=0 OPTION=0 raw=00000000 reset_pulses=1
+
+WDOG enabled=1 timeout_ms=2000 remaining_ms=1904 timeout_boot=0 core1_seen=1 core1_heartbeat=18935 core1_age_ms=95 feeds=145 recovery_reset=0 uptime_ms=14595

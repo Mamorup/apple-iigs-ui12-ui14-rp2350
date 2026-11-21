@@ -17,10 +17,11 @@ all IIgs or RP2350 revisions.
 | Powered-host reset | User confirmed keyboard reset worked; subsequent USB status had Sync=1 and watchdog active |
 | Warm-reset correction | ROM read RAM51=A5 after host RESET; user confirmed BASIC prompt and BASIC operation |
 | Schematic ERC | Rechecked the sharing copy with KiCad9 on2026-10-28:0 violations; original historical report retained |
-| PCB DRC / manufacturing | Not applicable: no routed PCB supplied |
+| PCB Rev2 | Archived four-layer CAD: ERC/DRC, unconnected and parity checks zero; physical fit and bring-up unverified |
 
-The supplied UF2 is the2026-10-28 warm-reset snapshot with watchdog and key
-LED retained. Not every earlier hardware test was repeated on this exact UF2.
+The historical 2026-10-28 snapshot is retained. The current UF2 is the
+2026-11-21 cold-start image; see the current validation below. The old image
+contains warm-reset, watchdog and key LED support. Not every earlier hardware test was repeated on this exact UF2.
 Its SHA256 and tool versions are in releases/2026-10-28/manifest.json.
 
 The sharing snapshot was rebuilt locally with SDK2.3.1/GCC12.3 after removing
@@ -54,3 +55,42 @@ Raw logs in this directory are selected development observations, not automated
 proof of every hardware property. Motherboard repairs were also necessary:
 an open CPU D0 connection was repaired and UE9 was replaced. Their symptoms
 should not be treated as evidence that every0911 error is a firmware issue.
+
+## 2026-11-21 firmware and November observations
+
+Current release: releases/2026-11-21/. Strict ARM build passed. On-device
+SELFTEST=0, armed=1, ready=1, startup_fix=1, startup hold released and watchdog
+healthy. The user confirmed startup with JP1 closed, internal IIgs supply
+only, USB disconnected, without the previous fatal error. This is one
+reported successful check; three cold starts and keyboard-reset regression
+were not explicitly repeated on this exact image.
+
+Earlier November firmware fixed host restarts while USB remains powered,
+with three successful user-reported cold boots. Repeated keyboard Power/Reset
+reports now yield one reset per press using a 250 ms quiet interval.
+Control+Reset enters BASIC as expected; Control+Command+Reset cold-boots.
+Some Floppy Emu disk images boot (B-1 Bomber reported working); Pac-Man
+produces repeated 2 characters and Tetris also failed. General game/storage
+compatibility is not established. Speaker hiss remains unresolved.
+
+Detailed cold-start USB observations are in validation/cold_power_start*.
+Firmware success does not qualify physical fit, pin protrusion, bottom
+clearance or electrical operation of the separate routed PCB prototypes.
+
+## Core2350B PTH carrier Rev B
+
+The 30 x 30 mm four-layer carrier is now CAD-complete. ERC, DRC, unconnected
+and schematic-parity counts are all zero. Independent GPIO/power and drill
+checks passed: 44 finished 0.65 mm holes, 17.40 mm row-centre spacing.
+Minimum trace 0.15 mm and clearance 0.20 mm. All fitted SMDs are on top.
+The bottom pin-1 marker is included in the fabrication set.
+
+No physical board, protruding pin fit or printed-housing clearance has been
+tested. Keep at least 4 mm below the ready-made Core module. The available
+3D model is an envelope, not manufacturer qualification CAD.
+
+Publication-source ARM rebuild and native model/input/reset-filter/watchdog
+regressions passed on 2026-11-21. The native runner explicitly undefines
+NDEBUG so assertions remain active with compilers that define it by default.
+The publication rebuild has its own hash in the current release manifest;
+the unchanged hardware-tested UF2 remains the download image.
