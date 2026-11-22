@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-22",
+  "purpose": "Remove 0.15mm drill sizes flagged for mandatory Kelvin test by JLCPCB",
+  "footprint_positions_and_attributes": "UNCHANGED",
+  "pad_net_assignments": "UNCHANGED",
+  "copper_layers": 4,
+  "PLCC44_drill_count": 44,
+  "PLCC44_finished_drill_mm": 0.65,
+  "minimum_via_drill_mm": 0.2,
+  "via_pad_drill_mm": [
+    {
+      "pad": 0.4,
+      "drill": 0.2,
+      "count": 113
+    },
+    {
+      "pad": 0.45,
+      "drill": 0.2,
+      "count": 3
+    }
+  ],
+  "minimum_track_mm": 0.1,
+  "clearance_mm": 0.1,
+  "bottom_component_clearance_mm": "at least 2mm, see report",
+  "ERC_DRC_unconnected_parity": "0 / 0 / 0 / 0",
+  "USB_and_crystal": "Original trace lengths unchanged",
+  "physical_fit": "Not tested",
+  "manufacturer_acceptance": "JLCPCB must review replacement files and reprice order"
+}

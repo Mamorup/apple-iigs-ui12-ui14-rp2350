@@ -154,3 +154,6 @@ Third-party components retain their licenses; notices for the SDK and
 TinyUSB used by the prebuilt firmware are included in [licenses/](licenses/).
 See [THIRD_PARTY.md](THIRD_PARTY.md). Apple ROMs, proprietary manuals,
 development captures and SDK/toolchain binaries are excluded.
+
+
+Manufacturing update (2026-11-22): the discrete RP2350B board now uses Rev2.1 files with minimum 0.20 mm via drills. Old Rev2 manufacturing ZIPs were removed from the current branch. See [corrected fabrication files](hardware/boards/rp2350b-4layer-rev2/README.md). The Core2350B PTH carrier is unchanged.
