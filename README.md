@@ -12,7 +12,7 @@ not required by this firmware and are not distributed here.
 
 **Status: working hardware prototype, 2026-11-21.** One ROM01 IIgs has reached
 Applesoft BASIC and accepted ADB keyboard input. This is not a fully qualified,
-drop-in production replacement. The original wiring schematic and a four-layer Rev2 PCB prototype are
+drop-in production replacement. The original wiring schematic and a four-layer Rev2.2 PCB prototype are
 included under hardware/. The completed Core2350B PTH Rev B carrier is included as a CAD-checked
 prototype under hardware/boards/core2350b-pth-revb/.
 
@@ -156,4 +156,7 @@ See [THIRD_PARTY.md](THIRD_PARTY.md). Apple ROMs, proprietary manuals,
 development captures and SDK/toolchain binaries are excluded.
 
 
-Manufacturing update (2026-11-22): the discrete RP2350B board now uses Rev2.1 files with minimum 0.20 mm via drills. Old Rev2 manufacturing ZIPs were removed from the current branch. See [corrected fabrication files](hardware/boards/rp2350b-4layer-rev2/README.md). The Core2350B PTH carrier is unchanged.
+The intermediate Rev2.1 drill-only update was superseded by Rev2.2; use the current files linked below.
+
+
+Correction 2026-11-23: use **Rev2.2 JLC045** for the discrete RP2350B PCB. ALL via lands are now 0.45 mm with 0.20 mm drills; the Rev2.1 0.40 mm lands were insufficient for JLCPCB. Older manufacturing ZIPs have been removed from main. [Corrected files](hardware/boards/rp2350b-4layer-rev2/README.md).
